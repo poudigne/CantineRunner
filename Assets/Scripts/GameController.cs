@@ -9,5 +9,4 @@ public class GameController : MonoBehaviour {
     {
         transform.Translate(new Vector3(speed * Time.deltaTime, 0.0f, 0.0f));
     }
-
 }

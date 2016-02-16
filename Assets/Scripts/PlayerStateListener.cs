@@ -12,8 +12,8 @@ public class PlayerStateListener : MonoBehaviour {
     public Transform bulletSpawnTransform;
 
     private Animator playerAnimator = null;
-    private PlayerStateController.PlayerStates previousState = PlayerStateController.PlayerStates.idle;
-    private PlayerStateController.PlayerStates currentState = PlayerStateController.PlayerStates.idle;
+    private PlayerStateController.PlayerStates previousState = PlayerStateController.PlayerStates.right;
+    private PlayerStateController.PlayerStates currentState = PlayerStateController.PlayerStates.right;
     private bool playerHasLanded = true;
 
     private Rigidbody2D body;
