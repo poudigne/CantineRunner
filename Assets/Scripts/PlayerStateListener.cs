@@ -6,8 +6,9 @@ public class PlayerStateListener : MonoBehaviour {
 
     public float playerWalkSpeed = 3f;
     public float playerJumpForceVertical = 500f;
-    public float playerJumpForceHorizontal = 200f;
+    public float playerJumpForceHorizontal = 0.0f;
     public GameObject playerRespawnPoint = null;
+    public GameObject bulletPrefab = null;
     public Transform bulletSpawnTransform;
 
     private Animator playerAnimator = null;
@@ -33,7 +34,7 @@ public class PlayerStateListener : MonoBehaviour {
         body = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
         PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.jump] = 1.0f;
-        PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.attack] = 1.0f;
+        PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.firingWeapon] = 1.0f;
     }
 
     void LateUpdate()
@@ -49,21 +50,21 @@ public class PlayerStateListener : MonoBehaviour {
             case PlayerStateController.PlayerStates.idle:
                 break;
             case PlayerStateController.PlayerStates.left:
-                transform.Translate(new Vector3((playerWalkSpeed * -1.0f) * Time.deltaTime, 0.0f, 0.0f));
-                if (localScale.x > 0.0f)
-                {
-                    localScale.x *= -1.0f;
-                    transform.localScale = localScale;
-                }
+                //transform.Translate(new Vector3((playerWalkSpeed * -1.0f) * Time.deltaTime, 0.0f, 0.0f));
+                //if (localScale.x > 0.0f)
+                //{
+                //    localScale.x *= -1.0f;
+                //    transform.localScale = localScale;
+                //}
 
-                break;
+                //break;
             case PlayerStateController.PlayerStates.right:
-                transform.Translate(new Vector3(playerWalkSpeed * Time.deltaTime, 0.0f, 0.0f));
-                if (localScale.x < 0.0f)
-                {
-                    localScale.x *= -1.0f;
-                    transform.localScale = localScale;
-                }
+                //transform.Translate(new Vector3(playerWalkSpeed * Time.deltaTime, 0.0f, 0.0f));
+                //if (localScale.x < 0.0f)
+                //{
+                //    localScale.x *= -1.0f;
+                //    transform.localScale = localScale;
+                //}
                 break;
             case PlayerStateController.PlayerStates.jump:
                 break;
@@ -76,6 +77,8 @@ public class PlayerStateListener : MonoBehaviour {
                 break;
             case PlayerStateController.PlayerStates.resurrect:
                 onStateChange(PlayerStateController.PlayerStates.idle);
+                break;
+            case PlayerStateController.PlayerStates.firingWeapon:
                 break;
         }
     }
@@ -130,14 +133,14 @@ public class PlayerStateListener : MonoBehaviour {
                 transform.rotation = Quaternion.identity;
                 body.velocity = Vector2.zero;
                 break;
-            case PlayerStateController.PlayerStates.attack:
+            case PlayerStateController.PlayerStates.firingWeapon:
                 GameObject newBullet = (GameObject)Instantiate(bulletPrefab);
                 newBullet.transform.position = bulletSpawnTransform.position;
                 PlayerBulletController bullCon = newBullet.GetComponent<PlayerBulletController>();
                 bullCon.player = gameObject;
                 bullCon.launchBullet();
                 onStateChange(currentState);
-                PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.attack] = Time.time + 0.25f;
+                PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.firingWeapon] = Time.time + 0.25f;
                 break;
         }
 
@@ -163,7 +166,7 @@ public class PlayerStateListener : MonoBehaviour {
             case PlayerStateController.PlayerStates.jump:
                 if (newState == PlayerStateController.PlayerStates.landing
                     || newState == PlayerStateController.PlayerStates.kill
-                    || newState == PlayerStateController.PlayerStates.attack)
+                    || newState == PlayerStateController.PlayerStates.firingWeapon)
                     returnVal = true;
                 else
                     returnVal = false;
@@ -172,7 +175,7 @@ public class PlayerStateListener : MonoBehaviour {
                 if (newState == PlayerStateController.PlayerStates.left
                     || newState == PlayerStateController.PlayerStates.right
                     || newState == PlayerStateController.PlayerStates.idle
-                    || newState == PlayerStateController.PlayerStates.attack)
+                    || newState == PlayerStateController.PlayerStates.firingWeapon)
                     returnVal = true;
                 else
                     returnVal = false;
@@ -192,7 +195,7 @@ public class PlayerStateListener : MonoBehaviour {
             case PlayerStateController.PlayerStates.falling:
                 returnVal = true;
                 break;
-            case PlayerStateController.PlayerStates.attack:
+            case PlayerStateController.PlayerStates.firingWeapon:
                 returnVal = true;
                 break;
         }
@@ -224,8 +227,8 @@ public class PlayerStateListener : MonoBehaviour {
                 break;
             case PlayerStateController.PlayerStates.resurrect:
                 break;
-            case PlayerStateController.PlayerStates.attack:
-                if (PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.attack] > Time.time)
+            case PlayerStateController.PlayerStates.firingWeapon:
+                if (PlayerStateController.stateDelayTimer[(int)PlayerStateController.PlayerStates.firingWeapon] > Time.time)
                     returnVal = true;
                 break;
         }

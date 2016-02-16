@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CameraController : MonoBehaviour {
 
+    public PlayerStateController.PlayerStates currentPlayerState = PlayerStateController.PlayerStates.idle;
     public GameObject playerObject = null;
     public float cameraTrackingSpeed = 0.2f;
     private Vector3 lastTargetPosition = Vector3.zero;
@@ -23,20 +24,43 @@ public class CameraController : MonoBehaviour {
 
     void OnEnable()
     {
+        PlayerStateController.onStateChange += onPlayerStateChange;
     }
     void OnDisable()
     {
+        PlayerStateController.onStateChange -= onPlayerStateChange;
     }
 
+    void onPlayerStateChange(PlayerStateController.PlayerStates newState)
+    {
+        currentPlayerState = newState;
+    }
 
     void LateUpdate()
     {
-        trackPlayer();
+        onStateCycle();
 
         currLerpDistance += cameraTrackingSpeed;
         transform.position = Vector3.Lerp(lastTargetPosition, currTargetPosition, currLerpDistance);
     }
-    
+
+    void onStateCycle()
+    {
+        switch (currentPlayerState)
+        {
+            case PlayerStateController.PlayerStates.firingWeapon:
+            case PlayerStateController.PlayerStates.falling:
+            case PlayerStateController.PlayerStates.jump:
+            case PlayerStateController.PlayerStates.landing:
+            case PlayerStateController.PlayerStates.idle:
+            case PlayerStateController.PlayerStates.left:
+            case PlayerStateController.PlayerStates.right:
+                trackPlayer();
+                break;
+            
+                break;
+        }
+    }
 
     void trackPlayer()
     {

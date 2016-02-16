@@ -14,7 +14,7 @@ public class PlayerStateController : MonoBehaviour {
         falling,
         kill,
         resurrect,
-        attack,
+        firingWeapon,
         _enumCount
     }
 
@@ -26,11 +26,7 @@ public class PlayerStateController : MonoBehaviour {
 
     void LateUpdate()
     { 
-        float horizontal = Input.GetAxis("Horizontal");
-        if (horizontal != 0f)
-            CallStateChange(horizontal < 0 ? PlayerStates.left : PlayerStates.right);
-        else
-            CallStateChange(PlayerStates.idle);
+        CallStateChange(PlayerStates.right);
 
         float jump = Input.GetAxis("Jump");
         if (jump > 0.0f)
@@ -38,7 +34,7 @@ public class PlayerStateController : MonoBehaviour {
 
         float firing = Input.GetAxis("Fire1");
         if (firing > 0.0f)
-            CallStateChange(PlayerStateController.PlayerStates.attack);
+            CallStateChange(PlayerStateController.PlayerStates.firingWeapon);
     }
 
     void CallStateChange(PlayerStates newState)
